@@ -4,6 +4,7 @@ import router from './router'
 import './plugins/element.js'
 
 import 'normalize.css/normalize.css'
+import './styles/reset.css'
 
 Vue.config.productionTip = false
 
