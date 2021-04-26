@@ -24,7 +24,7 @@
         </el-menu>
       </section>
       <section class="content">
-        <el-button type="primary" @click="add" icon="el-icon-plus"
+        <el-button type="primary" @click="_addUser" icon="el-icon-plus"
           >新增</el-button
         >
         <el-table :data="tableData" border style="width: 100%">
@@ -38,17 +38,23 @@
           <el-table-column prop="phone" label="电话"> </el-table-column>
           <el-table-column fixed="right" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="small">编辑</el-button>
-              <el-button
-                @click="handleClick(scope.row)"
-                type="text"
-                size="small"
+              <el-button type="text" size="small" @click="edit(scope.row)"
+                >编辑</el-button
+              >
+              <el-button @click="del(scope.row)" type="text" size="small"
                 >删除
               </el-button>
             </template>
           </el-table-column>
         </el-table>
-        <el-pagination background layout="prev, pager, next" :total="1000">
+        <el-pagination
+          @current-change="currentPageChange"
+          background
+          :current-page="page"
+          :page-size="per_page"
+          layout="prev, pager, next"
+          :total="total"
+        >
         </el-pagination>
       </section>
       <el-dialog title="收货地址" :visible.sync="dialogTableVisible">
@@ -59,13 +65,34 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-form-item label="活动名称" prop="username">
+          <el-form-item label="用户名" prop="username">
             <el-input v-model="ruleForm.username"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input type="password" v-model="ruleForm.password"></el-input>
+          </el-form-item>
+          <el-form-item label="昵称" prop="nickname">
+            <el-input v-model="ruleForm.nickname"></el-input>
+          </el-form-item>
+          <el-form-item label="性别" prop="gender">
+            <el-input v-model="ruleForm.gender"></el-input>
+          </el-form-item>
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="ruleForm.description"></el-input>
+          </el-form-item>
+          <el-form-item label="年龄" prop="age">
+            <el-input v-model="ruleForm.age"></el-input>
+          </el-form-item>
+          <el-form-item label="地址" prop="location">
+            <el-input v-model="ruleForm.location"></el-input>
+          </el-form-item>
+          <el-form-item label="电话" prop="phone">
+            <el-input v-model="ruleForm.phone"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="confirm('ruleForm')"
-              >确认</el-button
-            >
+              >确认
+            </el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -82,40 +109,36 @@ export default {
   },
   data() {
     return {
+      total: 0,
       ruleForm: {
-        username: ''
+        username: '',
+        password: '',
+        nickname: '',
+        gender: '',
+        description: '',
+        age: '',
+        location: '',
+        phone: ''
       },
       rules: {
         username: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' }
-        ]
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
+        gender: [{ required: true, message: '请输入性别', trigger: 'blur' }],
+        description: [
+          { required: true, message: '请输入个人简介', trigger: 'blur' }
+        ],
+        age: [{ required: true, message: '请输入年龄', trigger: 'blur' }],
+        location: [{ required: true, message: '请输入地址', trigger: 'blur' }],
+        phone: [{ required: true, message: '请输入电话号码', trigger: 'blur' }]
       },
       dialogTableVisible: false,
       isCollapse: true,
       tableData: [
         {
           username: 'jack',
-          password: '123456',
-          nickname: 'jack',
-          gender: '男',
-          description: '描述',
-          age: 21,
-          location: '杭州',
-          phone: '120323'
-        },
-        {
-          username: 'jack',
-          password: '123456',
-          nickname: 'jack',
-          gender: '男',
-          description: '描述',
-          age: 21,
-          location: '杭州',
-          phone: '120323'
-        },
-        {
-          username: 'jack',
-          password: '123456',
           nickname: 'jack',
           gender: '男',
           description: '描述',
@@ -123,8 +146,13 @@ export default {
           location: '杭州',
           phone: '120323'
         }
-      ]
+      ],
+      per_page: 7,
+      page: 1
     }
+  },
+  mounted() {
+    this._getUser()
   },
   methods: {
     handleOpen(key, keyPath) {
@@ -133,16 +161,50 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath)
     },
-    handleClick(row) {
-      console.log(row)
+    del(row) {
+      this.$req.delUser(row._id).then((res) => {
+        console.log(res)
+        this.page = 1
+        this._getUser()
+      })
     },
-    add() {
+    async edit(row) {
+      await this._getUserById(row._id)
       this.dialogTableVisible = true
+    },
+    currentPageChange(page) {
+      this.page = page
+      this._getUser()
+    },
+
+    _getUserById(id) {
+      this.$req.getUserById(id).then((res) => {
+        const params = { ...res }
+        delete params._id
+        this.ruleForm = params
+      })
+    },
+    _getUser() {
+      const { per_page, page } = this
+      const params = { per_page, page }
+      this.$req.getUser(params).then((res) => {
+        console.log(res)
+        this.tableData = res.user
+        this.total = res.total
+      })
+    },
+    _addUser() {
+      this.dialogTableVisible = true
+      const params = this.ruleForm
+      this.$req.addUser(params).then(() => {
+        this._getUser()
+        this.dialogTableVisible = false
+      })
     },
     confirm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this._addUser()
         } else {
           console.log('error submit!!')
           return false
@@ -152,10 +214,17 @@ export default {
   }
 }
 </script>
-
+<style lang="scss">
+.el-table__row {
+  td {
+    padding: 0;
+  }
+}
+</style>
 <style lang="scss" scoped>
 .home {
   height: 100%;
+
   .el-pagination {
     text-align: right;
     margin-top: 20px;
