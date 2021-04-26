@@ -10,7 +10,9 @@ import {
   Table,
   TableColumn,
   Pagination,
-  Dialog
+  Dialog,
+  Image,
+  Upload
 } from 'element-ui'
 
 Vue.use(Form)
@@ -24,3 +26,5 @@ Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Pagination)
 Vue.use(Dialog)
+Vue.use(Image)
+Vue.use(Upload)

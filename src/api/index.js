@@ -29,3 +29,33 @@ export const delUser = (id) => {
     method: 'DELETE'
   })
 }
+
+export const getOrder = (data) => {
+  return request({
+    url: '/order',
+    method: 'GET',
+    params: data
+  })
+}
+
+export const getOrderById = (id) => {
+  return request({
+    url: `/order/${id}`,
+    method: 'GET'
+  })
+}
+
+export const addOrder = (data) => {
+  return request({
+    url: '/order',
+    method: 'POST',
+    data
+  })
+}
+
+export const delOrder = (id) => {
+  return request({
+    url: `/order/${id}`,
+    method: 'DELETE'
+  })
+}
