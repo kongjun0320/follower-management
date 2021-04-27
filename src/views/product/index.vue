@@ -1,9 +1,6 @@
 <template>
   <div class="user">
-    <el-button
-      type="primary"
-      @click="dialogTableVisible = true"
-      icon="el-icon-plus"
+    <el-button type="primary" @click="create" icon="el-icon-plus"
       >新增</el-button
     >
     <el-table :data="tableData" border style="width: 100%">
@@ -86,13 +83,7 @@
                 >
                   <i class="el-icon-zoom-in"></i>
                 </span>
-                <span
-                  v-if="!disabled"
-                  class="el-upload-list__item-delete"
-                  @click="handleDownload(file)"
-                >
-                  <i class="el-icon-download"></i>
-                </span>
+
                 <span
                   v-if="!disabled"
                   class="el-upload-list__item-delete"
@@ -124,6 +115,9 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="" />
+    </el-dialog>
   </div>
 </template>
 
@@ -132,6 +126,8 @@ export default {
   name: 'product',
   data() {
     return {
+      dialogImageUrl: '',
+      dialogVisible: false,
       fileList: [],
       disabled: false,
       categorys: [],
@@ -172,7 +168,9 @@ export default {
         }
       ],
       per_page: 7,
-      page: 1
+      page: 1,
+      type: 1,
+      currentId: ''
     }
   },
   created() {
@@ -186,6 +184,21 @@ export default {
     // })
   },
   methods: {
+    create() {
+      this.fileList = []
+      this.ruleForm = {
+        name: '',
+        description: '',
+        info: '',
+        image: '',
+        price: '',
+        oldPrice: '',
+        count: '',
+        sellCount: ''
+      }
+      this.type = 1
+      this.dialogTableVisible = true
+    },
     _getCategory() {
       this.categorys = []
       this.$req.getCategory().then((res) => {
@@ -214,18 +227,32 @@ export default {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
-    handleDownload(file) {
-      console.log(file)
-    },
+
     del(row) {
-      this.$req.delProduct(row._id).then((res) => {
-        console.log(res)
-        this.page = 1
-        this._getProduct()
+      this.$confirm('确定要删除嘛？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(() => {
+          this.$req.delProduct(row._id).then((res) => {
+            console.log(res)
+            this.page = 1
+            this._getProduct()
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     async edit(row) {
+      this.type = 2
+      console.log(row)
       await this._getProductById(row._id)
+      this.currentId = row._id
       this.dialogTableVisible = true
     },
     currentPageChange(page) {
@@ -234,9 +261,12 @@ export default {
     },
 
     _getProductById(id) {
-      this.$req.getUserById(id).then((res) => {
+      this.fileList = []
+      this.$req.getProductById(id).then((res) => {
         const params = { ...res }
         delete params._id
+        this.fileList.push({})
+        this.fileList[0].url = res.image
         this.ruleForm = params
       })
     },
@@ -270,7 +300,19 @@ export default {
     confirm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this._addProduct()
+          if (this.type === 1) {
+            this._addProduct()
+          } else {
+            const params = { ...this.ruleForm }
+            this.$req.updateProduct(this.currentId, params).then(() => {
+              this.dialogTableVisible = false
+              this._getProduct()
+            })
+          }
+          this.$message({
+            message: '操作成功',
+            type: 'success'
+          })
         } else {
           console.log('error submit!!')
           return false

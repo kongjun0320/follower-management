@@ -38,6 +38,14 @@ export const delUser = (id) => {
   })
 }
 
+export const updateUser = (id, data) => {
+  return request({
+    url: `/user/${id}`,
+    method: 'PATCH',
+    data
+  })
+}
+
 export const getOrder = (data) => {
   return request({
     url: '/order',
@@ -116,6 +124,22 @@ export const addProductToCategory = (id, data) => {
   return request({
     url: `/category/${id}`,
     method: 'patch',
+    data
+  })
+}
+
+export const updateOrder = (id, data) => {
+  return request({
+    url: `/order/${id}`,
+    method: 'PATCH',
+    data
+  })
+}
+
+export const updateProduct = (id, data) => {
+  return request({
+    url: `/product/${id}`,
+    method: 'PATCH',
     data
   })
 }

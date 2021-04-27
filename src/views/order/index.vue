@@ -1,9 +1,6 @@
 <template>
   <div class="order">
-    <el-button
-      type="primary"
-      @click="dialogTableVisible = true"
-      icon="el-icon-plus"
+    <el-button type="primary" @click="create" icon="el-icon-plus"
       >新增</el-button
     >
     <el-table :data="tableData" border style="width: 100%">
@@ -82,13 +79,7 @@
                 >
                   <i class="el-icon-zoom-in"></i>
                 </span>
-                <span
-                  v-if="!disabled"
-                  class="el-upload-list__item-delete"
-                  @click="handleDownload(file)"
-                >
-                  <i class="el-icon-download"></i>
-                </span>
+
                 <span
                   v-if="!disabled"
                   class="el-upload-list__item-delete"
@@ -119,6 +110,9 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="" />
+    </el-dialog>
   </div>
 </template>
 
@@ -127,6 +121,8 @@ export default {
   name: 'Order',
   data() {
     return {
+      dialogImageUrl: '',
+      dialogVisible: false,
       fileList: [],
       disabled: false,
       total: 0,
@@ -158,25 +154,32 @@ export default {
       },
       dialogTableVisible: false,
 
-      tableData: [
-        {
-          username: 'jack',
-          nickname: 'jack',
-          gender: '男',
-          description: '描述',
-          age: 21,
-          location: '杭州',
-          phone: '120323'
-        }
-      ],
+      tableData: [],
       per_page: 7,
-      page: 1
+      page: 1,
+      type: 1,
+      currentId: ''
     }
   },
   mounted() {
     this._gerOrder()
   },
   methods: {
+    create() {
+      this.fileList = []
+      this.ruleForm = {
+        name: '',
+        description: '',
+        info: '',
+        image: '',
+        price: '',
+        oldPrice: '',
+        count: '',
+        sellCount: ''
+      }
+      this.type = 1
+      this.dialogTableVisible = true
+    },
     uploadSuccess(res) {
       this.ruleForm.image = res.url
     },
@@ -189,14 +192,13 @@ export default {
     },
     handleRemove(file) {
       console.log(file)
+      this.fileList = []
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
-    handleDownload(file) {
-      console.log(file)
-    },
+
     del(row) {
       this.$confirm('确定要删除嘛？', '提示', {
         confirmButtonText: '确定',
@@ -222,7 +224,9 @@ export default {
         })
     },
     async edit(row) {
+      this.type = 2
       await this._gerOrderById(row._id)
+      this.currentId = row._id
       this.dialogTableVisible = true
     },
     currentPageChange(page) {
@@ -259,9 +263,17 @@ export default {
     confirm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this._addOrder()
+          if (this.type === 1) {
+            this._addOrder()
+          } else {
+            const params = { ...this.ruleForm }
+            this.$req.updateOrder(this.currentId, params).then(() => {
+              this.dialogTableVisible = false
+              this._gerOrder()
+            })
+          }
           this.$message({
-            message: '添加成功',
+            message: '操作成功',
             type: 'success'
           })
         } else {
