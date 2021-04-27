@@ -11,7 +11,7 @@
         <el-input v-model="ruleForm.username"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="ruleForm.password"></el-input>
+        <el-input type="password" v-model="ruleForm.password"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="login('ruleForm')">登录 </el-button>
@@ -41,7 +41,10 @@ export default {
     login(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          const params = { ...this.ruleForm }
+          this.$req.login(params).then(() => {
+            this.$router.push('/user')
+          })
         } else {
           console.log('error submit!!')
           return false

@@ -64,8 +64,10 @@
             :limit="1"
             :multiple="false"
             :auto-upload="true"
+            :file-list="fileList"
             list-type="picture-card"
             :on-success="uploadSuccess"
+            :on-exceed="uploadExceed"
           >
             <i slot="default" class="el-icon-plus"></i>
             <div slot="file" slot-scope="{ file }">
@@ -126,6 +128,7 @@ export default {
   name: 'Order',
   data() {
     return {
+      fileList: [],
       disabled: false,
       total: 0,
       ruleForm: {
@@ -178,6 +181,13 @@ export default {
     uploadSuccess(res) {
       this.ruleForm.image = res.url
     },
+    uploadExceed(...args) {
+      console.log(args)
+      this.$message({
+        message: '操作失败，只允许上传一张图片',
+        type: 'error'
+      })
+    },
     handleRemove(file) {
       console.log(file)
     },
@@ -189,11 +199,28 @@ export default {
       console.log(file)
     },
     del(row) {
-      this.$req.delOrder(row._id).then((res) => {
-        console.log(res)
-        this.page = 1
-        this._gerOrder()
+      this.$confirm('确定要删除嘛？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(() => {
+          this.$req.delOrder(row._id).then((res) => {
+            console.log(res)
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.page = 1
+            this._gerOrder()
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     async edit(row) {
       await this._gerOrderById(row._id)
@@ -205,9 +232,12 @@ export default {
     },
 
     _gerOrderById(id) {
+      this.fileList = []
       this.$req.getOrderById(id).then((res) => {
         const params = { ...res }
         delete params._id
+        this.fileList.push({})
+        this.fileList[0].url = res.image
         this.ruleForm = params
       })
     },
@@ -231,6 +261,10 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this._addOrder()
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          })
         } else {
           console.log('error submit!!')
           return false

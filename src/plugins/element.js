@@ -12,8 +12,13 @@ import {
   Pagination,
   Dialog,
   Image,
-  Upload
+  Upload,
+  Message,
+  MessageBox
 } from 'element-ui'
+
+Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm
 
 Vue.use(Form)
 Vue.use(FormItem)
