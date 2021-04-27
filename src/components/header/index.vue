@@ -10,6 +10,12 @@
     </section>
     <section class="right">
       <span class="name">jack</span>
+      <el-button
+        :style="{ 'margin-left': '20px' }"
+        @click="$router.push('/login')"
+        type="primary"
+        >退出登录
+      </el-button>
     </section>
   </header>
 </template>
@@ -23,6 +29,7 @@ export default {
 <style lang="scss" scoped>
 .header {
   height: 70px;
+  min-height: 70px;
   width: 100%;
   font-size: 22px;
   background-color: #242f42;

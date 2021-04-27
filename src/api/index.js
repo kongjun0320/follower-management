@@ -67,3 +67,55 @@ export const delOrder = (id) => {
     method: 'DELETE'
   })
 }
+
+export const getProduct = (data) => {
+  return request({
+    url: '/product',
+    method: 'GET',
+    params: data
+  })
+}
+
+export const getProductById = (id) => {
+  return request({
+    url: `/product/${id}`,
+    method: 'GET'
+  })
+}
+
+export const addProduct = (data) => {
+  return request({
+    url: '/product',
+    method: 'POST',
+    data
+  })
+}
+
+export const delProduct = (id) => {
+  return request({
+    url: `/product/${id}`,
+    method: 'DELETE'
+  })
+}
+
+export const getCategory = () => {
+  return request({
+    url: `/category`,
+    method: 'GET'
+  })
+}
+
+export const getCategoryById = (id) => {
+  return request({
+    url: `/category/${id}`,
+    method: 'GET'
+  })
+}
+
+export const addProductToCategory = (id, data) => {
+  return request({
+    url: `/category/${id}`,
+    method: 'patch',
+    data
+  })
+}

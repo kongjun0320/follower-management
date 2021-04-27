@@ -58,7 +58,6 @@
           <el-input v-model="ruleForm.info"></el-input>
         </el-form-item>
         <el-form-item label="图片" prop="image">
-          <!-- <el-input v-model="ruleForm.image"></el-input> -->
           <el-upload
             action="http://localhost:3333/upload"
             :limit="1"

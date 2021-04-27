@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <k-header />
+    <k-header class="header-70" />
     <section class="main">
       <section class="menu">
         <el-menu
@@ -21,6 +21,10 @@
           <el-menu-item index="/order">
             <i class="el-icon-setting"></i>
             <span slot="title">订单管理</span>
+          </el-menu-item>
+          <el-menu-item index="/product">
+            <i class="el-icon-receiving"></i>
+            <span slot="title">商品管理</span>
           </el-menu-item>
         </el-menu>
       </section>
@@ -57,9 +61,11 @@ export default {
 <style lang="scss" scoped>
 .home {
   height: 100%;
+  display: flex;
+  flex-direction: column;
   .main {
-    height: 100%;
     display: flex;
+    flex: 1;
     .el-menu-vertical-demo:not(.el-menu--collapse) {
       width: 200px;
       height: 100%;
