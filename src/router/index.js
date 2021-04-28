@@ -5,7 +5,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'Home',
     component: () => import('../views/Home.vue'),
     children: [
@@ -14,19 +14,24 @@ const routes = [
         redirect: '/user'
       },
       {
-        path: '/user',
+        path: 'user',
         name: 'User',
         component: () => import('../views/user')
       },
       {
-        path: '/order',
+        path: 'order',
         name: 'Order',
         component: () => import('../views/order')
       },
       {
-        path: '/product',
+        path: 'product',
         name: 'Product',
         component: () => import('../views/product')
+      },
+      {
+        path: 'category',
+        name: 'Category',
+        component: () => import('../views/category')
       }
     ]
   },
@@ -34,6 +39,10 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () => import('../views/login')
+  },
+  {
+    path: '*',
+    redirect: '/login'
   }
 ]
 

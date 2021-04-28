@@ -106,10 +106,11 @@ export const delProduct = (id) => {
   })
 }
 
-export const getCategory = () => {
+export const getCategory = (data) => {
   return request({
     url: `/category`,
-    method: 'GET'
+    method: 'GET',
+    params: data
   })
 }
 
@@ -139,6 +140,29 @@ export const updateOrder = (id, data) => {
 export const updateProduct = (id, data) => {
   return request({
     url: `/product/${id}`,
+    method: 'PATCH',
+    data
+  })
+}
+
+export const addCategory = (data) => {
+  return request({
+    url: '/category',
+    method: 'POST',
+    data
+  })
+}
+
+export const delCategory = (id) => {
+  return request({
+    url: `/category/${id}`,
+    method: 'DELETE'
+  })
+}
+
+export const updateCategory = (id, data) => {
+  return request({
+    url: `/category/${id}`,
     method: 'PATCH',
     data
   })

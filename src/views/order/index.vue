@@ -5,6 +5,9 @@
     >
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column prop="name" label="名称"> </el-table-column>
+      <el-table-column prop="paytime" label="下单时间"> </el-table-column>
+      <el-table-column prop="phone" label="电话"> </el-table-column>
+      <el-table-column prop="location" label="地址"> </el-table-column>
       <el-table-column prop="description" label="描述"> </el-table-column>
       <el-table-column prop="info" label="简介"> </el-table-column>
       <el-table-column prop="image" label="图片">
@@ -14,9 +17,10 @@
         </template>
       </el-table-column>
       <el-table-column prop="price" label="价格"> </el-table-column>
+      <!--
       <el-table-column prop="oldPrice" label="老价格"> </el-table-column>
       <el-table-column prop="count" label="库存量"> </el-table-column>
-      <el-table-column prop="sellCount" label="销量"> </el-table-column>
+      <el-table-column prop="sellCount" label="销量"> </el-table-column> -->
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="edit(scope.row)"
@@ -47,6 +51,15 @@
       >
         <el-form-item label="名称" prop="name">
           <el-input v-model="ruleForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="下单时间" prop="paytime">
+          <el-input v-model="ruleForm.paytime"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="phone">
+          <el-input v-model="ruleForm.phone"></el-input>
+        </el-form-item>
+        <el-form-item label="地址" prop="location">
+          <el-input v-model="ruleForm.location"></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input v-model="ruleForm.description"></el-input>
@@ -94,7 +107,7 @@
         <el-form-item label="价格" prop="price">
           <el-input v-model="ruleForm.price"></el-input>
         </el-form-item>
-        <el-form-item label="老的价格" prop="oldPrice">
+        <!-- <el-form-item label="老的价格" prop="oldPrice">
           <el-input v-model="ruleForm.oldPrice"></el-input>
         </el-form-item>
         <el-form-item label="库存量" prop="count">
@@ -102,7 +115,7 @@
         </el-form-item>
         <el-form-item label="销量" prop="sellCount">
           <el-input v-model="ruleForm.sellCount"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" @click="confirm('ruleForm')"
             >确认
@@ -132,9 +145,12 @@ export default {
         info: '',
         image: '',
         price: '',
-        oldPrice: '',
-        count: '',
-        sellCount: ''
+        paytime: '',
+        phone: '',
+        location: ''
+        // oldPrice: '',
+        // count: '',
+        // sellCount: ''
       },
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
@@ -144,12 +160,10 @@ export default {
         info: [{ required: true, message: '请输入简介', trigger: 'blur' }],
         image: [{ required: true, message: '请上传图片', trigger: 'blur' }],
         price: [{ required: true, message: '请输入价格', trigger: 'blur' }],
-        oldPrice: [
-          { required: true, message: '请输入老的价格', trigger: 'blur' }
-        ],
-        count: [{ required: true, message: '请输入数量', trigger: 'blur' }],
-        sellCount: [
-          { required: true, message: '请输入销售数量', trigger: 'blur' }
+        phone: [{ required: true, message: '请输入电话', trigger: 'blur' }],
+        location: [{ required: true, message: '请输入地址', trigger: 'blur' }],
+        paytime: [
+          { required: true, message: '请输入创建时间', trigger: 'blur' }
         ]
       },
       dialogTableVisible: false,
@@ -173,9 +187,12 @@ export default {
         info: '',
         image: '',
         price: '',
-        oldPrice: '',
-        count: '',
-        sellCount: ''
+        paytime: '',
+        phone: '',
+        location: ''
+        // oldPrice: '',
+        // count: '',
+        // sellCount: ''
       }
       this.type = 1
       this.dialogTableVisible = true

@@ -14,17 +14,21 @@
           text-color="#909399"
           active-text-color="#20a0ff"
         >
-          <el-menu-item index="/user">
+          <el-menu-item index="/home/user">
             <i class="el-icon-menu"></i>
             <span slot="title">用户管理</span>
           </el-menu-item>
-          <el-menu-item index="/order">
+          <el-menu-item index="/home/order">
             <i class="el-icon-setting"></i>
             <span slot="title">订单管理</span>
           </el-menu-item>
-          <el-menu-item index="/product">
+          <el-menu-item index="/home/product">
             <i class="el-icon-receiving"></i>
             <span slot="title">商品管理</span>
+          </el-menu-item>
+          <el-menu-item index="/home/category">
+            <i class="el-icon-s-order"></i>
+            <span slot="title">分类管理</span>
           </el-menu-item>
         </el-menu>
       </section>

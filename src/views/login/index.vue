@@ -43,7 +43,7 @@ export default {
         if (valid) {
           const params = { ...this.ruleForm }
           this.$req.login(params).then(() => {
-            this.$router.push('/user')
+            this.$router.push('/home/user')
           })
         } else {
           this.$message({
