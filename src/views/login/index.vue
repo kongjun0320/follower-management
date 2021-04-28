@@ -46,7 +46,10 @@ export default {
             this.$router.push('/user')
           })
         } else {
-          console.log('error submit!!')
+          this.$message({
+            message: '用户名或者密码错误',
+            type: 'error'
+          })
           return false
         }
       })

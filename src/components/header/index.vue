@@ -9,7 +9,7 @@
       <span class="name">后台管理系统</span>
     </section>
     <section class="right">
-      <span class="name">jack</span>
+      <span class="name">admin</span>
       <el-button
         :style="{ 'margin-left': '20px' }"
         @click="$router.push('/login')"
